@@ -20,6 +20,7 @@ function App() {
                     {generateRoutes()}
                 </Switch>
             </div>
+
         </BrowserRouter>
     );
 }

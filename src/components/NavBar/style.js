@@ -10,8 +10,15 @@ export const useStyles = makeStyles((theme) => ({
     toolbarTitle: {
         flexGrow: 1,
         marginLeft: theme.spacing(0.5),
+        textDecoration: 'none',
+        display: 'flex',
+        alignItems: 'center'
+    },
+    btn: {
+        margin: theme.spacing(1, 1),
     },
     link: {
-        margin: theme.spacing(1, 1.5),
-    },
+        textDecoration: 'none',
+        color: theme.palette.secondary.contrastText
+    }
 }));

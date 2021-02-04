@@ -1,43 +1,44 @@
-import React, { memo } from 'react'
+import React, { memo, Fragment, useState } from 'react'
 import YouTubeIcon from '@material-ui/icons/YouTube';
 import Toolbar from '@material-ui/core/Toolbar';
 import AppBar from '@material-ui/core/AppBar';
-import { Box, Button, Grid, TextField, Typography } from '@material-ui/core';
+import { Box, Button, Grid, Typography } from '@material-ui/core';
 import { AccountCircle } from '@material-ui/icons';
 import LockIcon from '@material-ui/icons/Lock';
+import { StyledTextField } from './../../HOC/StyledTextField';
 import { useStyles } from './style';
+import { useDispatch, useSelector } from 'react-redux';
+import { LOGIN_SAGA } from '../../redux/constants/user.constant';
+import { Link, useHistory } from 'react-router-dom';
+import { logOutAct } from '../../redux/actions/user.action';
 
 function NavBar() {
     const classes = useStyles();
+    const [user, setUser] = useState({ username: '', password: '' });
+    const history = useHistory();
+    const dispatch = useDispatch();
+    const { isLoggedIn, username } = useSelector(state => state.userReducer);
 
-    return (
-        <AppBar position="fixed" color="default" elevation={0} className={classes.appBar}>
-            <Toolbar className={classes.toolbar}>
-                <YouTubeIcon fontSize="large" color="secondary" />
-                <Typography variant="h6" color="secondary" noWrap className={classes.toolbarTitle}>
-                    ShareTube
-                </Typography>
-                {/* <nav>
-                    <Grid container spacing={1} alignItems="flex-end">
-                        <Grid item>
-                            <AccountCircle />
-                        </Grid>
-                        <Grid item>
-                            <TextField id="username" label="Username" />
-                        </Grid>
-                        <Grid item>
-                            <LockIcon />
-                        </Grid>
-                        <Grid item>
-                            <TextField
-                                id="password"
-                                label="Password"
-                                type="password"
-                                autoComplete="current-password"
-                            />
-                        </Grid>
-                    </Grid>
-                </nav> */}
+    const handleChange = e => {
+        setUser({
+            ...user,
+            [e.target.name]: e.target.value
+        });
+    }
+
+    const handleLogin = () => {
+        // Dispatch to saga
+        dispatch({ type: LOGIN_SAGA, payload: user });
+    }
+
+    const handleLogout = () => {
+        dispatch(logOutAct());
+        history.push('/');
+    }
+
+    const showLoggedIn = () => {
+        return isLoggedIn ?
+            <Fragment>
                 <Box display="flex" alignItems="center">
                     <Box css={{ marginRight: 3 }}>
                         <Typography color="textPrimary">
@@ -46,16 +47,65 @@ function NavBar() {
                     </Box>
                     <Box>
                         <Typography color="secondary">
-                            Yasuo
+                            {username}
                         </Typography>
                     </Box>
                 </Box>
-                <Button href="#" color="secondary" variant="contained" className={classes.link}>
-                    Share a movie
+                <Button color="secondary" variant="contained" className={classes.btn}>
+                    <Link to="/share" className={classes.link}>
+                        Share a movie
+                    </Link>
                 </Button>
-                <Button href="#" color="secondary" variant="contained" className={classes.link}>
+                <Button color="secondary" variant="contained" className={classes.btn} onClick={handleLogout}>
+                    LogOut
+                </Button>
+            </Fragment>
+            : <Fragment>
+                <nav>
+                    <Grid container spacing={1} alignItems="flex-end">
+                        <Grid item>
+                            <AccountCircle />
+                        </Grid>
+                        <Grid item>
+                            <StyledTextField
+                                id="username"
+                                label="Username"
+                                name="username"
+                                onChange={handleChange}
+                            />
+                        </Grid>
+                        <Grid item>
+                            <LockIcon />
+                        </Grid>
+                        <Grid item>
+                            <StyledTextField
+                                id="password"
+                                label="Password"
+                                name="password"
+                                type="password"
+                                autoComplete="current-password"
+                                onChange={handleChange}
+                            />
+                        </Grid>
+                    </Grid>
+                </nav>
+                <Button color="secondary" variant="contained" className={classes.btn} onClick={handleLogin}>
                     Login/Register
                 </Button>
+            </Fragment>
+    }
+
+    return (
+        <AppBar position="fixed" color="default" elevation={0} className={classes.appBar}>
+            <Toolbar className={classes.toolbar}>
+                <Link to="/" className={classes.toolbarTitle}>
+                    <YouTubeIcon fontSize="large" color="secondary" />
+                    <Typography variant="h6" color="secondary" noWrap>
+                        ShareTube
+                    </Typography>
+                </Link>
+                {showLoggedIn()}
+
             </Toolbar>
         </AppBar>
     )
