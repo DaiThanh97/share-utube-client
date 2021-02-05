@@ -1,4 +1,4 @@
-import { GET_MOVIES } from "../constants/movie.constant"
+import { CLEAR_MOVIES, GET_MOVIES } from "../constants/movie.constant"
 
 const initialState = {
     listMovie: [],
@@ -19,6 +19,10 @@ const movieReducer = (state = initialState, { type, payload }) => {
             state.listMovie = listMovieUpdate;
             state.totalMovie = totalMovie;
             return { ...state }
+        }
+        case CLEAR_MOVIES: {
+            state.listMovie = [];
+            return { ...state };
         }
         default:
             return { ...state }

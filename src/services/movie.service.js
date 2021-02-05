@@ -7,7 +7,6 @@ class MovieService {
     }
 
     shareMovie = (url) => {
-        console.log(userService.getToken());
         return Axios.post(`${process.env.REACT_APP_API_URL}/movie/share`, {
             url,
         }, {

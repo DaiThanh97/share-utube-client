@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Container from '@material-ui/core/Container';
@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { GET_MOVIES_SAGA } from '../../redux/constants/movie.constant';
 import { useStyles } from './style';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { CircularProgress } from '@material-ui/core';
+import { clearMoviesAct } from '../../redux/actions/movie.action';
 
 export default function Home() {
     const classes = useStyles();
@@ -16,6 +16,7 @@ export default function Home() {
     const { totalMovie, listMovie } = useSelector(state => state.movieReducer);
 
     useEffect(() => {
+        dispatch(clearMoviesAct());
         dispatch({ type: GET_MOVIES_SAGA, payload: paginationRef.current });
     }, [dispatch]);
 
