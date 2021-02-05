@@ -1,4 +1,4 @@
-import React, { memo, Fragment, useState } from 'react'
+import React, { memo, Fragment, useState, useEffect } from 'react'
 import YouTubeIcon from '@material-ui/icons/YouTube';
 import Toolbar from '@material-ui/core/Toolbar';
 import AppBar from '@material-ui/core/AppBar';
@@ -15,9 +15,15 @@ import { logOutAct } from '../../redux/actions/user.action';
 function NavBar() {
     const classes = useStyles();
     const [user, setUser] = useState({ username: '', password: '' });
+    const [disableLogin, setDisableLogin] = useState(false);
     const history = useHistory();
     const dispatch = useDispatch();
     const { isLoggedIn, username } = useSelector(state => state.userReducer);
+
+    useEffect(() => {
+        console.log("RENDER");
+        setDisableLogin(isLoggedIn);
+    });
 
     const handleChange = e => {
         setUser({
@@ -29,6 +35,7 @@ function NavBar() {
     const handleLogin = () => {
         // Dispatch to saga
         dispatch({ type: LOGIN_SAGA, payload: user });
+        setDisableLogin(true);
     }
 
     const handleLogout = () => {
@@ -89,7 +96,7 @@ function NavBar() {
                         </Grid>
                     </Grid>
                 </nav>
-                <Button color="secondary" variant="contained" className={classes.btn} onClick={handleLogin}>
+                <Button color="secondary" disabled={disableLogin} variant="contained" className={classes.btn} onClick={handleLogin}>
                     Login/Register
                 </Button>
             </Fragment>

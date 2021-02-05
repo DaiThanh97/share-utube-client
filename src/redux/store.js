@@ -2,11 +2,13 @@ import { combineReducers, createStore, compose, applyMiddleware } from 'redux';
 import createSaga from 'redux-saga';
 import rootSaga from './sagas/root.saga';
 import userReducer from './reducers/user.reducer';
+import notiReducer from './reducers/noti.reducer';
 
 const saga = createSaga();
 
 const rootReducer = combineReducers({
-    userReducer
+    userReducer,
+    notiReducer
 });
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;

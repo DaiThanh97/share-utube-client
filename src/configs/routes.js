@@ -5,11 +5,13 @@ export const ROUTES = [
     {
         path: '/',
         exact: true,
+        auth: false,
         component: Home
     },
     {
         path: '/share',
         exact: false,
+        auth: true,
         component: Share
     }
 ]

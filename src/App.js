@@ -3,11 +3,14 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { ROUTES } from './configs/routes';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import NavBar from './components/NavBar';
+import Notify from './components/Notify';
+import Auth from './HOC/Auth';
 
 function App() {
     const generateRoutes = () => {
         return ROUTES.map((route, index) => {
-            return <Route {...route} key={index} />
+            const Component = route.auth ? Auth : Route;
+            return <Component {...route} key={index} />
         });
     }
 
@@ -20,7 +23,7 @@ function App() {
                     {generateRoutes()}
                 </Switch>
             </div>
-
+            <Notify />
         </BrowserRouter>
     );
 }
