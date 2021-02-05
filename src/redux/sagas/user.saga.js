@@ -4,9 +4,11 @@ import { userService } from './../../services/user.service';
 import { STATUS_CODE } from '../../configs/constant';
 import { logInAct } from './../actions/user.action';
 import { notiAct } from '../actions/noti.action';
+import { loadingLoginAct } from '../actions/loading.action';
 
 function* loginUser({ payload }) {
     try {
+        yield put(loadingLoginAct(true));
         const { username, password } = payload;
         const { status, data } = yield call(() => userService.logIn(username, password));
         if (status === STATUS_CODE.SUCCESS) {
@@ -18,6 +20,9 @@ function* loginUser({ payload }) {
     catch (err) {
         const { status, data } = err.response;
         yield put(notiAct({ status, message: data.message }));
+    }
+    finally {
+        yield put(loadingLoginAct(false));
     }
 }
 

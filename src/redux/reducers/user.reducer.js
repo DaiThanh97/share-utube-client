@@ -1,5 +1,5 @@
-import { LOGIN, LOGOUT } from "../constants/user.constant";
-import { STORAGE_KEY } from './../../configs/constant';
+import { userService } from "../../services/user.service";
+import { LOGIN, LOGOUT, CHECK_LOGIN } from "../constants/user.constant";
 
 const initialState = {
     username: '',
@@ -11,14 +11,28 @@ const userReducer = (state = initialState, { type, payload }) => {
         case LOGIN: {
             const { data: { token, username } } = payload;
             // Saved token
-            localStorage.setItem(STORAGE_KEY.USER_TOKEN, token);
+            userService.setToken(token);
+            userService.setUsername(username);
             state.username = username;
             state.isLoggedIn = true;
             return { ...state }
         }
         case LOGOUT: {
-            localStorage.setItem(STORAGE_KEY.USER_TOKEN, '');
+            userService.setToken('');
+            userService.setUsername('');
             state.isLoggedIn = false;
+            return { ...state };
+        }
+        case CHECK_LOGIN: {
+            const isTokenExpired = userService.isTokenExpired();
+            if (isTokenExpired) {
+                state.isLoggedIn = false;
+                state.username = '';
+            }
+            else {
+                state.isLoggedIn = true;
+                state.username = userService.getUsername();
+            }
             return { ...state };
         }
         default:

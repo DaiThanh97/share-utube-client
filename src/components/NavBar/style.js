@@ -14,6 +14,9 @@ export const useStyles = makeStyles((theme) => ({
         display: 'flex',
         alignItems: 'center'
     },
+    field: {
+        margin: theme.spacing(0, 2),
+    },
     btn: {
         margin: theme.spacing(1, 1),
     },

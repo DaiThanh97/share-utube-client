@@ -1,42 +1,40 @@
-import React, { memo, Fragment, useState, useEffect } from 'react'
+import React, { memo, Fragment, useEffect } from 'react'
 import YouTubeIcon from '@material-ui/icons/YouTube';
 import Toolbar from '@material-ui/core/Toolbar';
 import AppBar from '@material-ui/core/AppBar';
-import { Box, Button, Grid, Typography } from '@material-ui/core';
-import { AccountCircle } from '@material-ui/icons';
-import LockIcon from '@material-ui/icons/Lock';
+import { Box, Button, Typography } from '@material-ui/core';
 import { StyledTextField } from './../../HOC/StyledTextField';
 import { useStyles } from './style';
 import { useDispatch, useSelector } from 'react-redux';
 import { LOGIN_SAGA } from '../../redux/constants/user.constant';
 import { Link, useHistory } from 'react-router-dom';
-import { logOutAct } from '../../redux/actions/user.action';
+import { checkLoginAct, logOutAct } from '../../redux/actions/user.action';
+import { useFormik } from 'formik';
+import { validationLogin } from './../../configs/validation';
 
 function NavBar() {
     const classes = useStyles();
-    const [user, setUser] = useState({ username: '', password: '' });
-    const [disableLogin, setDisableLogin] = useState(false);
     const history = useHistory();
     const dispatch = useDispatch();
     const { isLoggedIn, username } = useSelector(state => state.userReducer);
-
-    useEffect(() => {
-        console.log("RENDER");
-        setDisableLogin(isLoggedIn);
+    const { loadingLogin } = useSelector(state => state.loadingReducer);
+    const formik = useFormik({
+        initialValues: {
+            username: '',
+            password: '',
+        },
+        validationSchema: validationLogin,
+        onSubmit: (values) => {
+            // Dispatch to saga
+            dispatch({ type: LOGIN_SAGA, payload: { ...values } });
+            values.username = "";
+            values.password = "";
+        },
     });
 
-    const handleChange = e => {
-        setUser({
-            ...user,
-            [e.target.name]: e.target.value
-        });
-    }
-
-    const handleLogin = () => {
-        // Dispatch to saga
-        dispatch({ type: LOGIN_SAGA, payload: user });
-        setDisableLogin(true);
-    }
+    useEffect(() => {
+        dispatch(checkLoginAct());
+    }, [dispatch])
 
     const handleLogout = () => {
         dispatch(logOutAct());
@@ -69,36 +67,33 @@ function NavBar() {
             </Fragment>
             : <Fragment>
                 <nav>
-                    <Grid container spacing={1} alignItems="flex-end">
-                        <Grid item>
-                            <AccountCircle />
-                        </Grid>
-                        <Grid item>
-                            <StyledTextField
-                                id="username"
-                                label="Username"
-                                name="username"
-                                onChange={handleChange}
-                            />
-                        </Grid>
-                        <Grid item>
-                            <LockIcon />
-                        </Grid>
-                        <Grid item>
-                            <StyledTextField
-                                id="password"
-                                label="Password"
-                                name="password"
-                                type="password"
-                                autoComplete="current-password"
-                                onChange={handleChange}
-                            />
-                        </Grid>
-                    </Grid>
+                    <form onSubmit={formik.handleSubmit}>
+                        <StyledTextField
+                            id="username"
+                            name="username"
+                            label="Username"
+                            value={formik.values.username}
+                            onChange={formik.handleChange}
+                            error={formik.touched.username && Boolean(formik.errors.username)}
+                            helperText={formik.touched.username && formik.errors.username}
+                            className={classes.field}
+                        />
+                        <StyledTextField
+                            id="password"
+                            name="password"
+                            label="Password"
+                            type="password"
+                            value={formik.values.password}
+                            onChange={formik.handleChange}
+                            error={formik.touched.password && Boolean(formik.errors.password)}
+                            helperText={formik.touched.password && formik.errors.password}
+                            className={classes.field}
+                        />
+                        <Button color="secondary" disabled={loadingLogin} variant="contained" className={classes.btn} type="submit">
+                            Login/Register
+                        </Button>
+                    </form>
                 </nav>
-                <Button color="secondary" disabled={disableLogin} variant="contained" className={classes.btn} onClick={handleLogin}>
-                    Login/Register
-                </Button>
             </Fragment>
     }
 
@@ -112,7 +107,6 @@ function NavBar() {
                     </Typography>
                 </Link>
                 {showLoggedIn()}
-
             </Toolbar>
         </AppBar>
     )

@@ -1,7 +1,7 @@
 // // ===================================STORE======================================== //
-export const LOGIN = 'LOGIN';
-export const LOGOUT = 'LOGOUT'
-export const CHECK_LOGIN = 'CHECK_LOGIN'
+export const GET_MOVIES = 'GET_MOVIES';
 
 // ====================================SAGA======================================== //
-export const LOGIN_SAGA = 'LOGIN_SAGA';
+export const GET_MOVIES_SAGA = 'GET_MOVIES_SAGA';
+export const SHARE_MOVIE_SAGA = 'SHARE_MOVIE_SAGA';
+

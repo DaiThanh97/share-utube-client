@@ -1,19 +1,23 @@
 import { NOTI } from "../constants/noti.constant"
 
 const initialState = {
-    status: -1,
-    message: ''
-}
-
-const errorReducer = (state = initialState, { type, payload }) => {
-    switch (type) {
-        case NOTI:
-            state.status = payload.status;
-            state.message = payload.message;
-            return { ...state }
-        default:
-            return state
+    noti: {
+        status: 0,
+        message: ''
     }
 }
 
-export default errorReducer;
+const notiReducer = (state = initialState, { type, payload }) => {
+    switch (type) {
+        case NOTI:
+            const notiUpdate = { ...state.noti };
+            notiUpdate.status = payload.status;
+            notiUpdate.message = payload.message;
+            state.noti = notiUpdate;
+            return { ...state }
+        default:
+            return { ...state }
+    }
+}
+
+export default notiReducer;

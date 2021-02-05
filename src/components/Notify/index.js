@@ -1,15 +1,15 @@
 import React, { Fragment, useEffect } from 'react';
-import Button from '@material-ui/core/Button';
 import { useSnackbar } from 'notistack';
 import { useSelector } from 'react-redux';
 import { STATUS_CODE } from '../../configs/constant';
 
 export default function Notify() {
     const { enqueueSnackbar } = useSnackbar();
-    const { status, message } = useSelector(state => state.notiReducer);
+    const { noti } = useSelector(state => state.notiReducer);
 
     useEffect(() => {
-        if (status !== -1) {
+        const { status, message } = noti;
+        if (status !== 0) {
             let variant = '';
             if (status === STATUS_CODE.SUCCESS) {
                 variant = 'success';
@@ -19,7 +19,7 @@ export default function Notify() {
             }
             enqueueSnackbar(message, { variant });
         }
-    });
+    }, [noti, enqueueSnackbar]);
 
     return (
         <Fragment>
